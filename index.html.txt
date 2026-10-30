@@ -1,0 +1,1485 @@
+Html
+
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Premium Shop & Community</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            darkBg: '#0b0c10',
+                            cardBg: '#12141c',
+                            panelBg: '#1a1d29',
+                            border: '#2a2e3f',
+                            red: '#ff1e42',
+                            redDark: '#c40028',
+                            redGlow: 'rgba(255, 30, 66, 0.25)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0c10;
+            color: #f1f5f9;
+        }
+
+        .red-glow-box {
+            box-shadow: 0 0 25px rgba(255, 30, 66, 0.15);
+        }
+
+        .red-glow-btn {
+            box-shadow: 0 0 15px rgba(255, 30, 66, 0.35);
+        }
+
+        .red-glow-btn:hover {
+            box-shadow: 0 0 25px rgba(255, 30, 66, 0.6);
+        }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0c10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2e3f;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff1e42;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-red-600 selection:text-white">
+
+    <!-- TOP HEADER / NAVBAR -->
+    <header id="top-header" class="hidden sticky top-0 z-40 bg-brand-cardBg/90 backdrop-blur-md border-b border-brand-border px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleSidebar()" class="p-2 rounded-xl text-gray-300 hover:text-white hover:bg-brand-panelBg transition focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl text-red-500"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                    <span class="font-extrabold tracking-wider text-lg text-white uppercase">VIP <span class="text-red-500">STORE</span></span>
+                </div>
+            </div>
+
+            <!-- Header Controls -->
+            <div class="flex items-center space-x-3">
+                <!-- Language Selector -->
+                <select id="lang-select" onchange="changeLanguage(this.value)" class="bg-brand-panelBg border border-brand-border text-red-400 font-semibold text-xs rounded-xl px-2.5 py-1.5 focus:outline-none cursor-pointer">
+                    <option value="de">🇩🇪 DE</option>
+                    <option value="en">🇬🇧 EN</option>
+                    <option value="ru">🇷🇺 RU</option>
+                </select>
+
+                <!-- User Badge -->
+                <div class="flex items-center space-x-2 bg-brand-panelBg border border-brand-border px-3 py-1.5 rounded-xl">
+                    <i class="fa-solid fa-circle-user text-red-500 text-sm"></i>
+                    <span id="user-display-name" class="text-xs font-bold text-gray-200">Kunde</span>
+                    <span id="admin-badge" class="hidden bg-red-600 text-white text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wider">ADMIN</span>
+                </div>
+
+                <!-- Logout -->
+                <button onclick="logout()" class="p-2 text-gray-400 hover:text-red-500 hover:bg-brand-panelBg rounded-xl transition" title="Abmelden">
+                    <i class="fa-solid fa-right-from-bracket text-base"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- WRAPPER FOR SIDEBAR & MAIN CONTENT -->
+    <div class="flex-1 flex overflow-hidden">
+
+        <!-- BURGER SIDEBAR NAVIGATION -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-brand-cardBg border-r border-brand-border transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between shadow-2xl">
+            <div class="p-4 space-y-6">
+                <!-- Sidebar Header -->
+                <div class="flex items-center justify-between pb-4 border-b border-brand-border">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-shield-halved text-red-500 text-xl"></i>
+                        <span class="font-bold text-sm tracking-wide text-white uppercase" data-i18n="menu">Menü</span>
+                    </div>
+                    <button onclick="toggleSidebar()" class="text-gray-400 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Nav Items -->
+                <nav class="space-y-1.5" id="nav-items">
+                    <!-- Products (Default for all) -->
+                    <button onclick="switchTab('products')" id="nav-products" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-red-500 bg-red-500/10 font-bold border border-red-500/20">
+                        <i class="fa-solid fa-box-open text-lg w-5 text-center"></i>
+                        <span data-i18n="products">Produkte</span>
+                    </button>
+
+                    <!-- Public Chat (For all) -->
+                    <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-gray-400 hover:text-red-400 hover:bg-brand-panelBg font-medium">
+                        <i class="fa-solid fa-comments text-lg w-5 text-center"></i>
+                        <span data-i18n="chat">Allgemeiner Chat</span>
+                    </button>
+
+                    <!-- Tickets & Orders (For all) -->
+                    <button onclick="switchTab('tickets')" id="nav-tickets" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-gray-400 hover:text-red-400 hover:bg-brand-panelBg font-medium">
+                        <i class="fa-solid fa-receipt text-lg w-5 text-center"></i>
+                        <span data-i18n="tickets">Bestellungen & Tickets</span>
+                    </button>
+
+                    <!-- Admin Private Chat (Admin Only) -->
+                    <button onclick="switchTab('admin-chat')" id="nav-admin-chat" class="admin-only hidden nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-gray-400 hover:text-red-400 hover:bg-brand-panelBg font-medium">
+                        <i class="fa-solid fa-user-shield text-lg w-5 text-center"></i>
+                        <span data-i18n="adminChat">Admin Privatchat</span>
+                    </button>
+
+                    <!-- Ban Management (Admin Only) -->
+                    <button onclick="switchTab('bans')" id="nav-bans" class="admin-only hidden nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-gray-400 hover:text-red-400 hover:bg-brand-panelBg font-medium">
+                        <i class="fa-solid fa-ban text-lg w-5 text-center"></i>
+                        <span data-i18n="banSystem">Sperrsystem (Bannen)</span>
+                    </button>
+
+                    <!-- Key Generator (Admin Only) -->
+                    <button onclick="switchTab('keys')" id="nav-keys" class="admin-only hidden nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-gray-400 hover:text-red-400 hover:bg-brand-panelBg font-medium">
+                        <i class="fa-solid fa-key text-lg w-5 text-center"></i>
+                        <span data-i18n="keysGen">Schlüssel Generator</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-brand-border">
+                <div class="bg-brand-panelBg p-3 rounded-xl border border-brand-border text-center">
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest" data-i18n="statusActive">System Status</p>
+                    <p class="text-xs font-bold text-red-500 mt-1"><i class="fa-solid fa-lock mr-1"></i> VIP Encrypted V2</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- BACKDROP FOR MOBILE SIDEBAR -->
+        <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 hidden"></div>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 p-4 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
+
+            <!-- 1. AUTH SCREEN (STRICTLY NO PRODUCTS DISPLAYED) -->
+            <section id="auth-screen" class="max-w-md mx-auto my-12 bg-brand-cardBg border border-brand-border p-8 rounded-3xl red-glow-box">
+                <div class="text-center mb-8">
+                    <div class="inline-flex p-4 bg-red-500/10 rounded-2xl border border-red-500/30 mb-4">
+                        <i class="fa-solid fa-key text-4xl text-red-500"></i>
+                    </div>
+                    <h2 class="text-2xl font-black text-white tracking-wide uppercase" data-i18n="welcomeTitle">Zugang verifizieren</h2>
+                    <p class="text-xs text-gray-400 mt-2" data-i18n="welcomeSubtitle">Bitte gib deinen Zugangsschlüssel ein, um fortzufahren.</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-red-500 tracking-wider mb-2" data-i18n="keyInputLabel">Zugangsschlüssel</label>
+                        <input type="text" id="access-key-input" required autocomplete="off" placeholder="VIP-XXXX-XXXX" class="w-full bg-brand-panelBg border border-brand-border text-red-500 text-center text-lg font-mono font-bold tracking-widest rounded-2xl px-4 py-3.5 focus:outline-none focus:border-red-500 transition placeholder:text-gray-700 placeholder:font-normal placeholder:tracking-normal placeholder:text-sm">
+                    </div>
+
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-extrabold py-3.5 px-4 rounded-2xl transition transform active:scale-95 red-glow-btn text-sm uppercase tracking-wider">
+                        <span data-i18n="loginBtn">Eintreten</span> <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </form>
+
+                <!-- Demo Keys for Easy Testing -->
+                <div class="mt-8 pt-6 border-t border-brand-border text-center">
+                    <p class="text-[11px] text-gray-500 mb-2">Schnelltest-Tasten:</p>
+                    <div class="flex justify-center space-x-2 text-xs font-mono">
+                        <button onclick="fillKey('ADMIN-1234')" class="bg-red-950 text-red-400 border border-red-800/60 px-3 py-1.5 rounded-xl hover:bg-red-900 transition">Admin Key</button>
+                        <button onclick="fillKey('KUNDE-DEMO-123')" class="bg-brand-panelBg text-gray-300 border border-brand-border px-3 py-1.5 rounded-xl hover:bg-gray-800 transition">Kunden Key</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PRODUCTS SECTION -->
+            <section id="sec-products" class="tab-content hidden space-y-6">
+                <!-- Promo banner -->
+                <div class="bg-gradient-to-r from-red-950/80 via-brand-cardBg to-brand-cardBg border border-red-500/30 p-5 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="p-3 bg-red-500/20 text-red-500 rounded-2xl border border-red-500/30">
+                            <i class="fa-solid fa-bolt text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-white text-base" data-i18n="kombiPromo">Aktion & Vorfinanzierung: Kombi (+50%)</h3>
+                            <p class="text-xs text-gray-400 mt-0.5">Wähle Expresslieferung (3 Tage, +5 €) oder Kombi für Sofortkäufe.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- JavaScript injected product cards -->
+                </div>
+            </section>
+
+            <!-- 3. PUBLIC CHAT SECTION -->
+            <section id="sec-chat" class="tab-content hidden h-[calc(100vh-140px)] flex flex-col bg-brand-cardBg border border-brand-border rounded-3xl overflow-hidden">
+                <div class="p-4 bg-brand-panelBg border-b border-brand-border flex items-center justify-between">
+                    <div>
+                        <h2 class="font-bold text-red-500 text-base" data-i18n="chatTitle">Allgemeiner Schild-Chat</h2>
+                        <p class="text-xs text-gray-400" data-i18n="chatDesc">Öffentlicher Raum für alle Mitglieder.</p>
+                    </div>
+                    <span class="bg-red-500/10 text-red-400 text-xs px-3 py-1 rounded-full border border-red-500/20 font-mono"><i class="fa-solid fa-users mr-1"></i> Live Chat</span>
+                </div>
+
+                <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4">
+                    <!-- Messages go here -->
+                </div>
+
+                <form onsubmit="sendPublicMessage(event)" class="p-4 bg-brand-panelBg border-t border-brand-border flex items-center space-x-3">
+                    <input type="text" id="chat-input" required placeholder="Schreibe eine Nachricht..." class="flex-1 bg-brand-darkBg border border-brand-border text-red-400 rounded-2xl px-4 py-3 focus:outline-none focus:border-red-500 text-sm">
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-3 rounded-2xl transition red-glow-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+
+            <!-- 4. TICKETS & ORDERS SECTION -->
+            <section id="sec-tickets" class="tab-content hidden space-y-6">
+                <div class="flex items-center justify-between bg-brand-cardBg p-5 rounded-3xl border border-brand-border">
+                    <div>
+                        <h2 class="text-xl font-bold text-red-500" data-i18n="ticketTitle">Bestellungen & Support</h2>
+                        <p class="text-xs text-gray-400" data-i18n="ticketDesc">Verfolge den Status deiner Bestellungen oder erstelle Support-Tickets.</p>
+                    </div>
+                    <button onclick="openNewTicketModal()" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-3 rounded-2xl transition flex items-center space-x-2 red-glow-btn">
+                        <i class="fa-solid fa-plus"></i>
+                        <span data-i18n="createTicket">Neues Ticket</span>
+                    </button>
+                </div>
+
+                <div id="tickets-list" class="space-y-4">
+                    <!-- Tickets rendered here -->
+                </div>
+            </section>
+
+            <!-- 5. ADMIN DIRECT CHAT SECTION (ADMIN ONLY) -->
+            <section id="sec-admin-chat" class="tab-content hidden h-[calc(100vh-140px)] flex flex-col md:flex-row bg-brand-cardBg border border-brand-border rounded-3xl overflow-hidden">
+                <div class="w-full md:w-72 bg-brand-panelBg border-r border-brand-border p-4 flex flex-col">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-red-500 mb-3" data-i18n="selectUser">Kunden auswählen</h3>
+                    <div id="admin-chat-users" class="space-y-1.5 overflow-y-auto flex-1">
+                        <!-- User list for chat -->
+                    </div>
+                </div>
+
+                <div class="flex-1 flex flex-col bg-brand-darkBg">
+                    <div id="admin-chat-header" class="p-4 bg-brand-panelBg border-b border-brand-border font-bold text-red-400 text-sm flex items-center justify-between">
+                        <span id="admin-chat-target-name">Wähle einen Nutzer aus</span>
+                    </div>
+                    <div id="admin-chat-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
+                        <p class="text-center text-gray-500 text-xs mt-10">Wähle links einen Kunden, um den privaten Chat zu starten.</p>
+                    </div>
+                    <form onsubmit="sendAdminPrivateMessage(event)" class="p-4 bg-brand-panelBg border-t border-brand-border flex items-center space-x-3">
+                        <input type="text" id="admin-chat-input" disabled placeholder="Nachricht eingeben..." class="flex-1 bg-brand-darkBg border border-brand-border text-red-400 rounded-2xl px-4 py-3 focus:outline-none focus:border-red-500 text-sm">
+                        <button type="submit" id="admin-chat-btn" disabled class="bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white font-bold px-5 py-3 rounded-2xl transition">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 6. BAN SYSTEM SECTION (ADMIN ONLY) -->
+            <section id="sec-bans" class="tab-content hidden space-y-6">
+                <div class="bg-brand-cardBg p-5 rounded-3xl border border-brand-border">
+                    <h2 class="text-xl font-bold text-red-500" data-i18n="banTitle">Nutzer-Sperrsystem</h2>
+                    <p class="text-xs text-gray-400" data-i18n="banDesc">Sperre unbefugte Nutzer direkt vom Server.</p>
+                </div>
+
+                <div class="bg-brand-cardBg border border-brand-border rounded-3xl overflow-hidden">
+                    <div class="p-4 border-b border-brand-border font-bold text-red-400 text-sm uppercase tracking-wider" data-i18n="activeUsers">Registrierte Nutzer & Schlüssel</div>
+                    <div id="ban-users-list" class="divide-y divide-brand-border">
+                        <!-- JS populated -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. KEY GENERATOR SECTION (ADMIN ONLY) -->
+            <section id="sec-keys" class="tab-content hidden space-y-6 max-w-2xl mx-auto">
+                <div class="bg-brand-cardBg p-6 rounded-3xl border border-brand-border red-glow-box">
+                    <h2 class="text-xl font-bold text-red-500 mb-1" data-i18n="genTitle">Zugangsschlüssel Generieren</h2>
+                    <p class="text-xs text-gray-400 mb-6" data-i18n="genDesc">Erstelle einen neuen Schlüssel für einen Kunden.</p>
+
+                    <form onsubmit="generateNewKey(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-red-400 uppercase tracking-wider mb-2" data-i18n="clientName">Kunden-Name</label>
+                            <input type="text" id="gen-key-name" required placeholder="z.B. Max Mustermann" class="w-full bg-brand-panelBg border border-brand-border text-red-400 rounded-2xl px-4 py-3 focus:outline-none focus:border-red-500 text-sm">
+                        </div>
+
+                        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-2xl transition red-glow-btn flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-key"></i>
+                            <span data-i18n="genBtn">Schlüssel Generieren</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-brand-cardBg p-6 rounded-3xl border border-brand-border">
+                    <h3 class="font-bold text-red-400 mb-4 text-xs uppercase tracking-wider" data-i18n="generatedKeys">Generierte Schlüssel</h3>
+                    <div id="keys-list" class="space-y-2">
+                        <!-- JS List -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: ORDER CONFIRMATION -->
+    <div id="order-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-cardBg border border-red-500/40 rounded-3xl max-w-lg w-full p-6 space-y-5 red-glow-box max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-brand-border pb-3">
+                <h3 class="text-lg font-bold text-red-500" id="order-modal-title">Bestellung aufgeben</h3>
+                <button onclick="closeOrderModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <form onsubmit="submitOrder(event)" class="space-y-4">
+                <input type="hidden" id="order-product-id">
+
+                <!-- Quantity Selection -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5" data-i18n="quantity">Menge / Variante</label>
+                    <select id="order-quantity-select" onchange="recalculateOrderTotal()" class="w-full bg-brand-panelBg border border-brand-border text-red-400 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-red-500">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Flavor Selection -->
+                <div id="flavor-container">
+                    <label class="block text-xs font-semibold text-gray-300 mb-1.5" data-i18n="flavor">Geschmack / Sorte</label>
+                    <select id="order-flavor-select" class="w-full bg-brand-panelBg border border-brand-border text-red-400 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-red-500">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+
+                <!-- Options -->
+                <div class="space-y-3 pt-2">
+                    <label class="flex items-start space-x-3 bg-brand-panelBg p-3.5 rounded-2xl border border-brand-border cursor-pointer hover:border-red-500/50 transition">
+                        <input type="checkbox" id="opt-express" onchange="recalculateOrderTotal()" class="mt-1 accent-red-500 w-4 h-4 rounded">
+                        <div class="text-xs">
+                            <span class="font-bold text-red-400" data-i18n="expressOpt">Expresslieferung (+5 €)</span>
+                            <p class="text-gray-400 text-[11px]" data-i18n="expressDesc">Lieferung garantiert innerhalb von 3 Tagen.</p>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start space-x-3 bg-brand-panelBg p-3.5 rounded-2xl border border-brand-border cursor-pointer hover:border-red-500/50 transition">
+                        <input type="checkbox" id="opt-kombi" onchange="recalculateOrderTotal()" class="mt-1 accent-red-500 w-4 h-4 rounded">
+                        <div class="text-xs">
+                            <span class="font-bold text-red-400" data-i18n="kombiOpt">Kombi (+50% Aufschlag)</span>
+                            <p class="text-gray-400 text-[11px]" data-i18n="kombiDesc">Vorfinanzierung von meinem Geld (+50% Aufschlag).</p>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Total -->
+                <div class="bg-brand-darkBg p-4 rounded-2xl border border-brand-border flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase text-gray-400" data-i18n="totalPrice">Gesamtsumme:</span>
+                    <span id="order-total-price" class="text-xl font-extrabold text-red-500">0,00 €</span>
+                </div>
+
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-2xl transition red-glow-btn text-sm uppercase tracking-wider" data-i18n="confirmOrderBtn">
+                    Kostenpflichtig bestellen
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: NEW TICKET -->
+    <div id="ticket-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-cardBg border border-brand-border rounded-3xl max-w-md w-full p-6 space-y-4 red-glow-box">
+            <div class="flex items-center justify-between border-b border-brand-border pb-3">
+                <h3 class="text-lg font-bold text-red-500" data-i18n="createTicketTitle">Neues Support Ticket</h3>
+                <button onclick="closeTicketModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <form onsubmit="submitNewTicket(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-red-400 uppercase mb-1" data-i18n="ticketSubject">Betreff</label>
+                    <input type="text" id="ticket-subject-input" required placeholder="z.B. Frage zu meiner Bestellung" class="w-full bg-brand-panelBg border border-brand-border text-red-400 rounded-2xl px-4 py-3 focus:outline-none focus:border-red-500 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-red-400 uppercase mb-1" data-i18n="ticketMsg">Nachricht</label>
+                    <textarea id="ticket-msg-input" required rows="4" placeholder="Beschreibe dein Anliegen..." class="w-full bg-brand-panelBg border border-brand-border text-red-400 rounded-2xl px-4 py-3 focus:outline-none focus:border-red-500 text-sm"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-2xl transition red-glow-btn" data-i18n="sendTicketBtn">
+                    Ticket absenden
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: TICKET DETAIL & CHAT WITH STATUS CONTROLS -->
+    <div id="ticket-detail-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-brand-cardBg border border-brand-border rounded-3xl max-w-lg w-full p-6 space-y-4 red-glow-box flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between border-b border-brand-border pb-3">
+                <div>
+                    <h3 class="text-base font-bold text-red-500" id="td-subject">Ticket Betreff</h3>
+                    <p class="text-xs text-gray-400" id="td-user-info">Erstellt von: -</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span id="td-status-badge" class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Offen</span>
+                    <button onclick="closeTicketDetailModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+            </div>
+
+            <!-- Admin Action Controls inside ticket -->
+            <div id="td-admin-controls" class="hidden flex flex-wrap gap-2 p-3 bg-brand-panelBg rounded-2xl border border-brand-border">
+                <span class="w-full text-[10px] font-bold uppercase tracking-wider text-gray-400">Status ändern (Admin):</span>
+                <button onclick="setTicketStatus('In Bearbeitung')" class="bg-blue-600/30 border border-blue-500/50 hover:bg-blue-600 text-blue-300 hover:text-white text-xs px-2.5 py-1.5 rounded-xl transition font-semibold" data-i18n="stInProgress">
+                    'In Bearbeitung'
+                </button>
+                <button onclick="setTicketStatus('Unterwegs / Versand')" class="bg-purple-600/30 border border-purple-500/50 hover:bg-purple-600 text-purple-300 hover:text-white text-xs px-2.5 py-1.5 rounded-xl transition font-semibold">
+                    'Unterwegs'
+                </button>
+                <button onclick="setTicketStatus('Abgeschlossen')" class="bg-green-600/30 border border-green-500/50 hover:bg-green-600 text-green-300 hover:text-white text-xs px-2.5 py-1.5 rounded-xl transition font-semibold" data-i18n="stClosed">
+                    'Abgeschlossen'
+                </button>
+                <button onclick="deleteCurrentTicket()" class="bg-red-800 hover:bg-red-900 text-white text-xs px-2.5 py-1.5 rounded-xl transition font-semibold ml-auto" data-i18n="delete">
+                    Löschen
+                </button>
+            </div>
+
+            <!-- Ticket Messages -->
+            <div id="td-chat-messages" class="flex-1 overflow-y-auto space-y-3 p-3 bg-brand-darkBg rounded-2xl border border-brand-border min-h-[180px]">
+                <!-- Messages -->
+            </div>
+
+            <!-- Reply Form -->
+            <form onsubmit="sendTicketReply(event)" class="flex items-center space-x-2 pt-2">
+                <input type="text" id="td-reply-input" required placeholder="Antworten..." class="flex-1 bg-brand-panelBg border border-brand-border text-red-400 rounded-2xl px-4 py-2.5 focus:outline-none focus:border-red-500 text-sm">
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-2xl transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- APPLICATION JAVASCRIPT LOGIC -->
+    <script>
+        // --- TRANSLATIONS (DE, EN, RU) ---
+        const i18n = {
+            de: {
+                menu: "Menü",
+                products: "Produkte",
+                chat: "Allgemeiner Chat",
+                tickets: "Bestellungen & Support",
+                adminChat: "Admin Privatchat",
+                banSystem: "Sperrsystem (Bannen)",
+                keysGen: "Schlüssel Generator",
+                statusActive: "System Status",
+                welcomeTitle: "Zugang verifizieren",
+                welcomeSubtitle: "Bitte gib deinen gültigen Code ein, um Zugriff auf die Plattform zu erhalten.",
+                keyInputLabel: "Zugangsschlüssel",
+                loginBtn: "Eintreten",
+                kombiPromo: "Aktion & Vorfinanzierung: Kombi (+50%)",
+                chatTitle: "Allgemeiner Schild-Chat",
+                chatDesc: "Öffentlicher Raum für alle Mitglieder.",
+                ticketTitle: "Bestellungen & Support",
+                ticketDesc: "Verfolge den Status deiner Bestellungen oder erstelle Support-Tickets.",
+                createTicket: "Neues Ticket",
+                selectUser: "Kunden auswählen",
+                banTitle: "Nutzer-Sperrsystem",
+                banDesc: "Sperre unbefugte Nutzer direkt vom Server.",
+                activeUsers: "Registrierte Nutzer & Schlüssel",
+                genTitle: "Zugangsschlüssel Generieren",
+                genDesc: "Erstelle einen neuen Schlüssel für einen Kunden.",
+                clientName: "Kunden-Name",
+                genBtn: "Schlüssel Generieren",
+                generatedKeys: "Generierte Schlüssel",
+                quantity: "Menge / Variante",
+                flavor: "Geschmack / Sorte",
+                expressOpt: "Expresslieferung (+5 €)",
+                expressDesc: "Lieferung garantiert innerhalb von 3 Tagen.",
+                kombiOpt: "Kombi (+50% Aufschlag)",
+                kombiDesc: "Vorfinanzierung von meinem Geld (+50% Aufschlag).",
+                totalPrice: "Gesamtsumme:",
+                confirmOrderBtn: "Kostenpflichtig bestellen",
+                createTicketTitle: "Neues Support Ticket",
+                ticketSubject: "Betreff",
+                ticketMsg: "Nachricht",
+                sendTicketBtn: "Ticket absenden",
+                stInProgress: "'In Bearbeitung'",
+                stClosed: "'Abgeschlossen'",
+                delete: "Löschen",
+                banBtn: "Vom Server bannen",
+                orderNow: "Jetzt Bestellen"
+            },
+            en: {
+                menu: "Menu",
+                products: "Products",
+                chat: "General Chat",
+                tickets: "Orders & Support",
+                adminChat: "Admin Private Chat",
+                banSystem: "Ban System",
+                keysGen: "Key Generator",
+                statusActive: "System Status",
+                welcomeTitle: "Verify Access",
+                welcomeSubtitle: "Enter your access key to enter.",
+                keyInputLabel: "Access Key",
+                loginBtn: "Enter",
+                kombiPromo: "Promo & Combo (+50%)",
+                chatTitle: "General Chat",
+                chatDesc: "Public room for all members.",
+                ticketTitle: "Orders & Support",
+                ticketDesc: "Track order status or open support tickets.",
+                createTicket: "New Ticket",
+                selectUser: "Select Client",
+                banTitle: "User Ban System",
+                banDesc: "Ban unauthorized users directly.",
+                activeUsers: "Registered Users & Keys",
+                genTitle: "Generate Access Key",
+                genDesc: "Create a new key for a client.",
+                clientName: "Client Name",
+                genBtn: "Generate Key",
+                generatedKeys: "Generated Keys",
+                quantity: "Quantity / Variant",
+                flavor: "Flavor / Type",
+                expressOpt: "Express Delivery (+5 €)",
+                expressDesc: "Guaranteed delivery within 3 days.",
+                kombiOpt: "Combo (+50% Surcharge)",
+                kombiDesc: "Pre-funded with my money (+50% fee).",
+                totalPrice: "Total Amount:",
+                confirmOrderBtn: "Place Order",
+                createTicketTitle: "New Support Ticket",
+                ticketSubject: "Subject",
+                ticketMsg: "Message",
+                sendTicketBtn: "Submit Ticket",
+                stInProgress: "'In Progress'",
+                stClosed: "'Closed'",
+                delete: "Delete",
+                banBtn: "Ban from server",
+                orderNow: "Order Now"
+            },
+            ru: {
+                menu: "Меню",
+                products: "Продукты",
+                chat: "Общий чат",
+                tickets: "Заказы и Служба поддержки",
+                adminChat: "Чат Админа",
+                banSystem: "Система банов",
+                keysGen: "Генератор ключей",
+                statusActive: "Статус системы",
+                welcomeTitle: "Проверка доступа",
+                welcomeSubtitle: "Введите ваш ключ доступа.",
+                keyInputLabel: "Ключ доступа",
+                loginBtn: "Войти",
+                kombiPromo: "Акция Комбо (+50%)",
+                chatTitle: "Общий чат",
+                chatDesc: "Комната для всех участников.",
+                ticketTitle: "Заказы и поддержка",
+                ticketDesc: "Отслеживайте статус заказов.",
+                createTicket: "Новый тикет",
+                selectUser: "Выбрать клиента",
+                banTitle: "Система блокировок",
+                banDesc: "Забанить пользователя на сервере.",
+                activeUsers: "Зарегистрированные ключи",
+                genTitle: "Сгенерировать ключ",
+                genDesc: "Создайте ключ для клиента.",
+                clientName: "Имя клиента",
+                genBtn: "Создать ключ",
+                generatedKeys: "Ключи",
+                quantity: "Количество",
+                flavor: "Вкус / Вид",
+                expressOpt: "Экспресс-доставка (+5 €)",
+                expressDesc: "Доставка в течение 3 дней.",
+                kombiOpt: "Комбо (+50%)",
+                kombiDesc: "Предоплата (+50% к стоимости).",
+                totalPrice: "Итого:",
+                confirmOrderBtn: "Заказать",
+                createTicketTitle: "Новый тикет",
+                ticketSubject: "Тема",
+                ticketMsg: "Сообщение",
+                sendTicketBtn: "Отправить",
+                stInProgress: "'В обработке'",
+                stClosed: "'Завершено'",
+                delete: "Удалить",
+                banBtn: "Забанить",
+                orderNow: "Заказать"
+            }
+        };
+
+        let currentLang = 'de';
+
+        // --- PRODUCT DATA ---
+        const PRODUCTS_DATA = [
+            {
+                id: 'vozol20k',
+                title: '20k Vozol Star',
+                badge: 'Beliebt',
+                options: [
+                    { label: '1 Stück (15 €)', price: 15 },
+                    { label: '2 Stück (25 € Aktion)', price: 25 }
+                ],
+                flavors: [
+                    'Strawberry bubblegum', 'Blueberry Strom', 'Double Apple ice',
+                    'Peach Mango watermelon', 'Mixed berries bubblegum', 'Strawberry Mango',
+                    'Dragon strawnana', 'Lemon lime', 'Tropical blast (Watermelon blueberry slush)',
+                    'Mango ice', 'Mango Peach slush', 'Grape bubblegum', 'Cool wind bubblegum'
+                ]
+            },
+            {
+                id: 'pablo_snus',
+                title: 'Pablo Snus',
+                badge: 'Snus',
+                options: [
+                    { label: '1 Packung (8 €)', price: 8 },
+                    { label: '4 Packungen (30 €)', price: 30 },
+                    { label: '1 Stange (60 €)', price: 60 }
+                ],
+                flavors: [
+                    'ice Cold', 'Dark Cherry', 'strawberry watermelon', 'Blue Raspberry',
+                    'Cherry Cola', 'Grape ice', 'Watermelon Lemon', 'frosted ice',
+                    'Kiwi', 'pink lemonade', 'Tropical Punsch', 'banana ice',
+                    'passionfruit', 'Strawberry Kiwi'
+                ]
+            },
+            {
+                id: 'al_fakhr_8k',
+                title: '8k Al Fakhr v2',
+                badge: 'Klassiker',
+                options: [
+                    { label: '1 Stück (15 €)', price: 15 },
+                    { label: '1 Stück Special (17 €)', price: 17 }
+                ],
+                flavors: [
+                    'Black currant ice', 'Space Dream', 'Cherry Cola', 'Lush ice',
+                    'Lemon lime', 'Peach ice', 'Dragenfruit', 'Mixed berries'
+                ]
+            },
+            {
+                id: 'al_fakhr_12k',
+                title: 'Un 12k Al Fakhr',
+                badge: 'Top Seller',
+                options: [
+                    { label: '1 Stück (10 €)', price: 10 },
+                    { label: '1 Stück Special (12 €)', price: 12 }
+                ],
+                flavors: [
+                    'Bluberry Peach ice', 'Dragenfruit', 'Grape ice',
+                    'Cool Mango (Lemon lime Cherry fizz)', 'Blueberry ice', 'Vimto'
+                ]
+            },
+            {
+                id: 'fumot_90k',
+                title: '90k Fumot 5in1',
+                badge: '5in1',
+                options: [
+                    { label: '1 Stück (20 €)', price: 20 },
+                    { label: '1 Stück Edition (22 €)', price: 22 }
+                ],
+                flavors: [
+                    '1. Mix: Banana ice / Strawb. banana / Strawb. Kiwi / Strawb. watermelon / Watermelon ice',
+                    '2. Mix: Cool mint / Lemon lime / Pink lemonade / Blue razz / Mixed berries'
+                ]
+            },
+            {
+                id: 'zigaretten',
+                title: 'Zigaretten',
+                badge: 'Tabak',
+                options: [
+                    { label: '1x Schachtel (8 €)', price: 8 },
+                    { label: '1x Stange (60 €)', price: 60 }
+                ],
+                flavors: [
+                    'Winston blau Vorrätig',
+                    'Marlboro rot Vorrätig'
+                ]
+            },
+            {
+                id: 'fumot_12k',
+                title: '12k Fumot',
+                badge: '12 €',
+                options: [
+                    { label: '1 Stück (12 €)', price: 12 }
+                ],
+                flavors: [
+                    'Strawberry Kiwi', 'Pinapple ice', 'Ice Pop', 'Grape ice', 'Blue razz Gummy Bear',
+                    'Strawberry watermelon', 'Lush ice', 'Dr Blue', 'Mango on ice', 'Strawberry Pomp',
+                    'Bluberry Raspberry', 'Strawberry Grape', 'Dragenfruit ice', 'Blueberry kiwi',
+                    'Strawberry redbull', 'Raspberry watermelon', 'Fruity Fusion', 'Grape mint',
+                    'Black ice', 'Berry lemonade', 'Strawberry Donut', 'Banana ice', 'Cherry Cola',
+                    'Magic love', 'Mixed berries', 'Blueberry on ice', 'Cherry Berry'
+                ]
+            },
+            {
+                id: 'adalya_30k',
+                title: '30k Adalya',
+                badge: '17 €',
+                options: [
+                    { label: '1 Stück (17 €)', price: 17 }
+                ],
+                flavors: [
+                    'Kiwi passionfruit guava', 'Strawberry Kiwi', 'African crush', 'Love 66',
+                    'Cola Dragon', 'Ice Bonbon', 'Bagdadi', 'Very berry', 'English Lord',
+                    'Grape Berry', 'Hawaii', 'Call of Fruity', 'Double Melon ice', 'Grape mint',
+                    'Black Box', 'Chewing gum Melon', 'Kiwi', 'Resident Cherry', 'Menthol',
+                    'Mint Point', 'Swiss bonbon', 'Punkman', 'Mango', 'Raspberry redemption', 'Absolute Zero'
+                ]
+            }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let keysState = JSON.parse(localStorage.getItem('vip_keys')) || [
+            { key: 'ADMIN-1234', name: 'Admin Hauptkonto', isAdmin: true, banned: false },
+            { key: 'ADMIN-SECRET-KEY', name: 'Admin Hauptkonto', isAdmin: true, banned: false },
+            { key: 'KUNDE-DEMO-123', name: 'Max Mustermann', isAdmin: false, banned: false }
+        ];
+
+        let currentUser = null;
+
+        let globalChat = JSON.parse(localStorage.getItem('vip_chat')) || [
+            { sender: 'Admin Hauptkonto', text: 'Willkommen auf unserer exklusiven Plattform!', time: '12:00', isAdmin: true }
+        ];
+
+        let ticketsState = JSON.parse(localStorage.getItem('vip_tickets')) || [
+            {
+                id: 1,
+                userKey: 'KUNDE-DEMO-123',
+                userName: 'Max Mustermann',
+                subject: 'Bestellung: Pablo Snus (1 Stange)',
+                status: 'In Bearbeitung',
+                messages: [
+                    { sender: 'Max Mustermann', text: 'Bestellung über 1 Stange Pablo Snus aufgegeben. Express gewählt.', time: '12:05' },
+                    { sender: 'Admin Hauptkonto', text: 'Deine Bestellung ist eingegangen und wird vorbereitet!', time: '12:10' }
+                ]
+            }
+        ];
+
+        let privateChatState = JSON.parse(localStorage.getItem('vip_private_chats')) || {};
+
+        let activeAdminChatUserKey = null;
+        let selectedProductForOrder = null;
+        let currentOpenTicketId = null;
+
+        function saveState() {
+            localStorage.setItem('vip_keys', JSON.stringify(keysState));
+            localStorage.setItem('vip_chat', JSON.stringify(globalChat));
+            localStorage.setItem('vip_tickets', JSON.stringify(ticketsState));
+            localStorage.setItem('vip_private_chats', JSON.stringify(privateChatState));
+        }
+
+        // --- AUTHENTICATION & SECURITY ---
+        function fillKey(k) {
+            document.getElementById('access-key-input').value = k;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const inputKey = document.getElementById('access-key-input').value.trim();
+
+            const foundKey = keysState.find(k => k.key.toUpperCase() === inputKey.toUpperCase());
+
+            if (!foundKey) {
+                alert('Ungültiger Zugangsschlüssel!');
+                return;
+            }
+
+            if (foundKey.banned) {
+                alert('Dieser Zugangsschlüssel wurde vom Administrator gesperrt!');
+                return;
+            }
+
+            currentUser = foundKey;
+
+            // UI Adjustments - STRICT ADMIN VISIBILITY
+            document.getElementById('user-display-name').innerText = currentUser.name;
+            if (currentUser.isAdmin) {
+                document.getElementById('admin-badge').classList.remove('hidden');
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+            } else {
+                document.getElementById('admin-badge').classList.add('hidden');
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+            }
+
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('top-header').classList.remove('hidden');
+
+            renderProducts();
+            switchTab('products');
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('top-header').classList.add('hidden');
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebar-backdrop').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('access-key-input').value = '';
+            
+            // STRICT SECURITY: Clear rendered products from DOM on logout
+            document.getElementById('products-grid').innerHTML = '';
+        }
+
+        function checkBannedStatus() {
+            if (!currentUser) return;
+            const updatedUser = keysState.find(k => k.key === currentUser.key);
+            if (updatedUser && updatedUser.banned) {
+                alert('Du wurdest vom Server gebannt!');
+                logout();
+            }
+        }
+
+        // --- NAVIGATION & SIDEBAR ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function switchTab(tabId) {
+            checkBannedStatus();
+            
+            // SECURITY CHECK: Block Non-Admin access to restricted tabs
+            const adminTabs = ['admin-chat', 'bans', 'keys'];
+            if (adminTabs.includes(tabId) && (!currentUser || !currentUser.isAdmin)) {
+                alert('Zugriff verweigert: Nur für Administratoren!');
+                switchTab('products');
+                return;
+            }
+
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+
+            // Reset navigation button styles
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-gray-400 hover:text-red-400 hover:bg-brand-panelBg font-medium";
+            });
+
+            // Show target section & highlight button
+            const targetSection = document.getElementById(`sec-${tabId}`);
+            const targetNavBtn = document.getElementById(`nav-${tabId}`);
+
+            if (targetSection) targetSection.classList.remove('hidden');
+            if (targetNavBtn) {
+                targetNavBtn.className = "nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition text-red-500 bg-red-500/10 font-bold border border-red-500/20";
+            }
+
+            // Close sidebar on mobile select
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebar-backdrop').classList.add('hidden');
+
+            // Render section content
+            if (tabId === 'chat') renderPublicChat();
+            if (tabId === 'tickets') renderTickets();
+            if (tabId === 'admin-chat' && currentUser && currentUser.isAdmin) renderAdminChatUserList();
+            if (tabId === 'bans' && currentUser && currentUser.isAdmin) renderBanList();
+            if (tabId === 'keys' && currentUser && currentUser.isAdmin) renderKeysList();
+        }
+
+        // --- PRODUCTS RENDER ---
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            PRODUCTS_DATA.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "bg-brand-cardBg border border-brand-border rounded-3xl p-5 flex flex-col justify-between hover:border-red-500/40 transition group";
+
+                let flavorsListHtml = p.flavors.map(f => `<li class="text-xs text-gray-300 flex items-center"><i class="fa-solid fa-angle-right text-[10px] text-red-500 mr-2"></i>${f}</li>`).join('');
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-black text-lg text-white group-hover:text-red-500 transition">${p.title}</h3>
+                            <span class="bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase">${p.badge}</span>
+                        </div>
+
+                        <div class="bg-brand-panelBg p-3 rounded-2xl border border-brand-border mb-4 space-y-1">
+                            ${p.options.map(o => `<div class="flex justify-between text-xs font-semibold"><span class="text-gray-300">${o.label}</span></div>`).join('')}
+                        </div>
+
+                        <p class="text-[11px] uppercase font-bold text-gray-500 mb-2 tracking-wider">Verfügbare Sorten (${p.flavors.length}):</p>
+                        <ul class="space-y-1 max-h-40 overflow-y-auto pr-1 mb-4 border-l-2 border-brand-border pl-2">
+                            ${flavorsListHtml}
+                        </ul>
+                    </div>
+
+                    <button onclick="openOrderModal('${p.id}')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-2xl transition red-glow-btn text-xs uppercase tracking-wider flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span data-i18n="orderNow">${i18n[currentLang].orderNow || 'Jetzt Bestellen'}</span>
+                    </button>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // --- ORDER MODAL & COMPUTATION ---
+        function openOrderModal(productId) {
+            checkBannedStatus();
+            selectedProductForOrder = PRODUCTS_DATA.find(p => p.id === productId);
+            if (!selectedProductForOrder) return;
+
+            document.getElementById('order-modal-title').innerText = `Bestellung: ${selectedProductForOrder.title}`;
+            document.getElementById('order-product-id').value = productId;
+
+            // Populate options
+            const qtySelect = document.getElementById('order-quantity-select');
+            qtySelect.innerHTML = selectedProductForOrder.options.map((o, idx) => `<option value="${idx}">${o.label}</option>`).join('');
+
+            // Populate flavors
+            const flavorSelect = document.getElementById('order-flavor-select');
+            flavorSelect.innerHTML = selectedProductForOrder.flavors.map(f => `<option value="${f}">${f}</option>`).join('');
+
+            document.getElementById('opt-express').checked = false;
+            document.getElementById('opt-kombi').checked = false;
+
+            recalculateOrderTotal();
+            document.getElementById('order-modal').classList.remove('hidden');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('order-modal').classList.add('hidden');
+        }
+
+        function recalculateOrderTotal() {
+            if (!selectedProductForOrder) return;
+
+            const qtyIdx = parseInt(document.getElementById('order-quantity-select').value) || 0;
+            const basePrice = selectedProductForOrder.options[qtyIdx].price;
+
+            let total = basePrice;
+
+            // Check Express (+5 €)
+            if (document.getElementById('opt-express').checked) {
+                total += 5;
+            }
+
+            // Check Kombi (+50%)
+            if (document.getElementById('opt-kombi').checked) {
+                total = total * 1.5;
+            }
+
+            document.getElementById('order-total-price').innerText = `${total.toFixed(2).replace('.', ',')} €`;
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            checkBannedStatus();
+
+            const qtyIdx = parseInt(document.getElementById('order-quantity-select').value) || 0;
+            const selectedOpt = selectedProductForOrder.options[qtyIdx];
+            const flavor = document.getElementById('order-flavor-select').value;
+            const isExpress = document.getElementById('opt-express').checked;
+            const isKombi = document.getElementById('opt-kombi').checked;
+            const totalText = document.getElementById('order-total-price').innerText;
+
+            const orderDetails = `${selectedProductForOrder.title} (${selectedOpt.label}) - Sorte: ${flavor} | Express: ${isExpress ? 'JA' : 'Nein'} | Kombi: ${isKombi ? 'JA (+50%)' : 'Nein'} | Summe: ${totalText}`;
+
+            // Create Order Ticket
+            const newTicket = {
+                id: Date.now(),
+                userKey: currentUser.key,
+                userName: currentUser.name,
+                subject: `Bestellung: ${selectedProductForOrder.title}`,
+                status: 'Offen',
+                messages: [
+                    {
+                        sender: currentUser.name,
+                        text: `Automatische Bestellung:\n${orderDetails}`,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    }
+                ]
+            };
+
+            ticketsState.unshift(newTicket);
+            saveState();
+
+            closeOrderModal();
+            alert('Deine Bestellung wurde als Ticket eingereicht! Du kannst den Status im Menü unter "Bestellungen & Support" einsehen.');
+            switchTab('tickets');
+        }
+
+        // --- PUBLIC CHAT ---
+        function renderPublicChat() {
+            const container = document.getElementById('chat-messages');
+            container.innerHTML = '';
+
+            globalChat.forEach(m => {
+                const isMe = m.sender === currentUser.name;
+                const msgEl = document.createElement('div');
+                msgEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+
+                msgEl.innerHTML = `
+                    <div class="max-w-[80%] ${isMe ? 'bg-red-600 text-white' : 'bg-brand-panelBg text-gray-200 border border-brand-border'} p-3.5 rounded-2xl text-xs space-y-1">
+                        <div class="flex items-center space-x-2 font-bold text-[10px] ${isMe ? 'text-red-100' : 'text-red-400'}">
+                            <span>${m.sender}</span>
+                            ${m.isAdmin ? '<span class="bg-red-950 text-red-300 text-[9px] px-1 rounded border border-red-800">ADMIN</span>' : ''}
+                            <span class="text-gray-400 font-normal ml-auto">${m.time}</span>
+                        </div>
+                        <p class="whitespace-pre-wrap">${m.text}</p>
+                    </div>
+                `;
+                container.appendChild(msgEl);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendPublicMessage(e) {
+            e.preventDefault();
+            checkBannedStatus();
+
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            globalChat.push({
+                sender: currentUser.name,
+                text: text,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                isAdmin: currentUser.isAdmin
+            });
+
+            saveState();
+            input.value = '';
+            renderPublicChat();
+        }
+
+        // --- TICKETS & ORDER STATUS TRACKING ---
+        function renderTickets() {
+            const list = document.getElementById('tickets-list');
+            list.innerHTML = '';
+
+            const visibleTickets = currentUser.isAdmin
+                ? ticketsState
+                : ticketsState.filter(t => t.userKey === currentUser.key);
+
+            if (visibleTickets.length === 0) {
+                list.innerHTML = `<div class="bg-brand-cardBg border border-brand-border p-8 text-center rounded-3xl text-gray-500 text-xs">Keine aktiven Bestellungen oder Tickets vorhanden.</div>`;
+                return;
+            }
+
+            visibleTickets.forEach(t => {
+                let badgeClass = 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+                if (t.status === 'In Bearbeitung') badgeClass = 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+                if (t.status === 'Unterwegs / Versand') badgeClass = 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+                if (t.status === 'Abgeschlossen') badgeClass = 'bg-green-500/20 text-green-400 border-green-500/30';
+
+                const card = document.createElement('div');
+                card.className = "bg-brand-cardBg border border-brand-border p-4 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:border-red-500/40 transition cursor-pointer";
+                card.onclick = () => openTicketDetail(t.id);
+
+                card.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-3">
+                            <span class="font-extrabold text-white text-sm">${t.subject}</span>
+                            <span class="text-[10px] px-2.5 py-0.5 rounded-full border font-bold uppercase tracking-wider ${badgeClass}">${t.status}</span>
+                        </div>
+                        <p class="text-xs text-gray-400">Kunde: <span class="text-red-400 font-medium">${t.userName}</span> | Nachrichten: ${t.messages.length}</p>
+                    </div>
+                    <button class="bg-brand-panelBg hover:bg-red-600 hover:text-white text-gray-300 text-xs font-semibold px-3.5 py-2.5 rounded-2xl border border-brand-border transition">
+                        Status & Details <i class="fa-solid fa-chevron-right ml-1"></i>
+                    </button>
+                `;
+
+                list.appendChild(card);
+            });
+        }
+
+        function openTicketDetail(ticketId) {
+            checkBannedStatus();
+            currentOpenTicketId = ticketId;
+            const ticket = ticketsState.find(t => t.id === ticketId);
+            if (!ticket) return;
+
+            document.getElementById('td-subject').innerText = ticket.subject;
+            document.getElementById('td-user-info').innerText = `Kunde: ${ticket.userName}`;
+
+            const badge = document.getElementById('td-status-badge');
+            badge.innerText = ticket.status;
+            badge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ";
+
+            if (ticket.status === 'In Bearbeitung') badge.className += "bg-blue-500/20 text-blue-400 border border-blue-500/30";
+            else if (ticket.status === 'Unterwegs / Versand') badge.className += "bg-purple-500/20 text-purple-400 border border-purple-500/30";
+            else if (ticket.status === 'Abgeschlossen') badge.className += "bg-green-500/20 text-green-400 border border-green-500/30";
+            else badge.className += "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
+
+            if (currentUser.isAdmin) {
+                document.getElementById('td-admin-controls').classList.remove('hidden');
+            } else {
+                document.getElementById('td-admin-controls').classList.add('hidden');
+            }
+
+            renderTicketMessages(ticket);
+            document.getElementById('ticket-detail-modal').classList.remove('hidden');
+        }
+
+        function closeTicketDetailModal() {
+            document.getElementById('ticket-detail-modal').classList.add('hidden');
+            currentOpenTicketId = null;
+        }
+
+        function renderTicketMessages(ticket) {
+            const container = document.getElementById('td-chat-messages');
+            container.innerHTML = '';
+
+            ticket.messages.forEach(m => {
+                const isMe = m.sender === currentUser.name;
+                const msgEl = document.createElement('div');
+                msgEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+
+                msgEl.innerHTML = `
+                    <div class="max-w-[85%] ${isMe ? 'bg-red-600 text-white' : 'bg-brand-panelBg text-gray-200 border border-brand-border'} p-3 rounded-2xl text-xs space-y-1">
+                        <div class="flex items-center space-x-2 font-bold text-[10px] ${isMe ? 'text-red-100' : 'text-red-400'}">
+                            <span>${m.sender}</span>
+                            <span class="text-gray-400 font-normal ml-auto">${m.time}</span>
+                        </div>
+                        <p class="whitespace-pre-wrap">${m.text}</p>
+                    </div>
+                `;
+                container.appendChild(msgEl);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendTicketReply(e) {
+            e.preventDefault();
+            checkBannedStatus();
+            if (!currentOpenTicketId) return;
+
+            const input = document.getElementById('td-reply-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const ticket = ticketsState.find(t => t.id === currentOpenTicketId);
+            if (ticket) {
+                ticket.messages.push({
+                    sender: currentUser.name,
+                    text: text,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+
+                saveState();
+                input.value = '';
+                renderTicketMessages(ticket);
+                renderTickets();
+            }
+        }
+
+        function setTicketStatus(status) {
+            if (!currentUser.isAdmin || !currentOpenTicketId) return;
+
+            const ticket = ticketsState.find(t => t.id === currentOpenTicketId);
+            if (ticket) {
+                ticket.status = status;
+                saveState();
+                openTicketDetail(currentOpenTicketId);
+                renderTickets();
+            }
+        }
+
+        function deleteCurrentTicket() {
+            if (!currentUser.isAdmin || !currentOpenTicketId) return;
+            if (!confirm('Ticket wirklich löschen?')) return;
+
+            ticketsState = ticketsState.filter(t => t.id !== currentOpenTicketId);
+            saveState();
+            closeTicketDetailModal();
+            renderTickets();
+        }
+
+        function openNewTicketModal() {
+            document.getElementById('ticket-modal').classList.remove('hidden');
+        }
+
+        function closeTicketModal() {
+            document.getElementById('ticket-modal').classList.add('hidden');
+        }
+
+        function submitNewTicket(e) {
+            e.preventDefault();
+            checkBannedStatus();
+
+            const subject = document.getElementById('ticket-subject-input').value.trim();
+            const msg = document.getElementById('ticket-msg-input').value.trim();
+
+            if (!subject || !msg) return;
+
+            const newTicket = {
+                id: Date.now(),
+                userKey: currentUser.key,
+                userName: currentUser.name,
+                subject: subject,
+                status: 'Offen',
+                messages: [
+                    {
+                        sender: currentUser.name,
+                        text: msg,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    }
+                ]
+            };
+
+            ticketsState.unshift(newTicket);
+            saveState();
+
+            document.getElementById('ticket-subject-input').value = '';
+            document.getElementById('ticket-msg-input').value = '';
+            closeTicketModal();
+
+            renderTickets();
+        }
+
+        // --- ADMIN PRIVATE CHAT ---
+        function renderAdminChatUserList() {
+            if (!currentUser || !currentUser.isAdmin) return;
+
+            const list = document.getElementById('admin-chat-users');
+            list.innerHTML = '';
+
+            const clients = keysState.filter(k => !k.isAdmin);
+
+            clients.forEach(c => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-3 rounded-2xl text-xs font-semibold flex items-center justify-between transition ${activeAdminChatUserKey === c.key ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-brand-darkBg'}`;
+                btn.onclick = () => selectAdminChatUser(c.key);
+
+                btn.innerHTML = `
+                    <span>${c.name}</span>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                `;
+                list.appendChild(btn);
+            });
+        }
+
+        function selectAdminChatUser(key) {
+            activeAdminChatUserKey = key;
+            const targetUser = keysState.find(k => k.key === key);
+            if (!targetUser) return;
+
+            document.getElementById('admin-chat-target-name').innerText = `Privatchat mit: ${targetUser.name}`;
+            document.getElementById('admin-chat-input').disabled = false;
+            document.getElementById('admin-chat-btn').disabled = false;
+
+            renderAdminChatUserList();
+            renderAdminPrivateMessages();
+        }
+
+        function renderAdminPrivateMessages() {
+            if (!activeAdminChatUserKey) return;
+            const container = document.getElementById('admin-chat-messages');
+            container.innerHTML = '';
+
+            const messages = privateChatState[activeAdminChatUserKey] || [];
+
+            if (messages.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-500 text-xs mt-10">Noch keine Nachrichten in diesem Privatchat.</p>`;
+                return;
+            }
+
+            messages.forEach(m => {
+                const isMe = m.sender === currentUser.name;
+                const msgEl = document.createElement('div');
+                msgEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+
+                msgEl.innerHTML = `
+                    <div class="max-w-[80%] ${isMe ? 'bg-red-600 text-white' : 'bg-brand-panelBg text-gray-200 border border-brand-border'} p-3 rounded-2xl text-xs space-y-1">
+                        <div class="flex items-center space-x-2 font-bold text-[10px] ${isMe ? 'text-red-100' : 'text-red-400'}">
+                            <span>${m.sender}</span>
+                            <span class="text-gray-400 font-normal ml-auto">${m.time}</span>
+                        </div>
+                        <p class="whitespace-pre-wrap">${m.text}</p>
+                    </div>
+                `;
+                container.appendChild(msgEl);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendAdminPrivateMessage(e) {
+            e.preventDefault();
+            if (!currentUser || !currentUser.isAdmin || !activeAdminChatUserKey) return;
+
+            const input = document.getElementById('admin-chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            if (!privateChatState[activeAdminChatUserKey]) {
+                privateChatState[activeAdminChatUserKey] = [];
+            }
+
+            privateChatState[activeAdminChatUserKey].push({
+                sender: currentUser.name,
+                text: text,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+
+            saveState();
+            input.value = '';
+            renderAdminPrivateMessages();
+        }
+
+        // --- BAN SYSTEM ---
+        function renderBanList() {
+            if (!currentUser || !currentUser.isAdmin) return;
+
+            const container = document.getElementById('ban-users-list');
+            container.innerHTML = '';
+
+            const clients = keysState.filter(k => !k.isAdmin);
+
+            if (clients.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-gray-500 text-xs">Keine registrierten Nutzer vorhanden.</div>`;
+                return;
+            }
+
+            clients.forEach(c => {
+                const item = document.createElement('div');
+                item.className = "p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-brand-cardBg hover:bg-brand-panelBg transition";
+
+                item.innerHTML = `
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-white text-sm">${c.name}</span>
+                            ${c.banned ? '<span class="bg-red-950 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded border border-red-800">GEBANNT</span>' : '<span class="bg-green-950 text-green-400 text-[10px] font-bold px-2 py-0.5 rounded border border-green-800">AKTIV</span>'}
+                        </div>
+                        <p class="text-xs font-mono text-gray-400 mt-0.5">Schlüssel: ${c.key}</p>
+                    </div>
+                    <div>
+                        ${c.banned ?
+                            `<button onclick="unbanUser('${c.key}')" class="bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold px-3.5 py-2.5 rounded-2xl border border-gray-700 transition">Entbannen</button>` :
+                            `<button onclick="banUser('${c.key}')" class="bg-red-800 hover:bg-red-900 text-white text-xs font-bold px-3.5 py-2.5 rounded-2xl transition shadow-md">${i18n[currentLang].banBtn || 'Vom Server bannen'}</button>`
+                        }
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function banUser(key) {
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('Aktion verweigert!');
+                return;
+            }
+            const target = keysState.find(k => k.key === key);
+            if (target) {
+                target.banned = true;
+                saveState();
+                renderBanList();
+            }
+        }
+
+        function unbanUser(key) {
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('Aktion verweigert!');
+                return;
+            }
+            const target = keysState.find(k => k.key === key);
+            if (target) {
+                target.banned = false;
+                saveState();
+                renderBanList();
+            }
+        }
+
+        // --- KEY GENERATOR ---
+        function generateNewKey(e) {
+            e.preventDefault();
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('Aktion verweigert!');
+                return;
+            }
+
+            const nameInput = document.getElementById('gen-key-name');
+            const name = nameInput.value.trim();
+            if (!name) return;
+
+            const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+            const newKey = `VIP-${randomCode}`;
+
+            keysState.push({
+                key: newKey,
+                name: name,
+                isAdmin: false,
+                banned: false
+            });
+
+            saveState();
+            nameInput.value = '';
+            renderKeysList();
+        }
+
+        function renderKeysList() {
+            if (!currentUser || !currentUser.isAdmin) return;
+
+            const container = document.getElementById('keys-list');
+            container.innerHTML = '';
+
+            keysState.forEach(k => {
+                const item = document.createElement('div');
+                item.className = "bg-brand-panelBg border border-brand-border p-3.5 rounded-2xl flex items-center justify-between";
+
+                item.innerHTML = `
+                    <div>
+                        <span class="font-bold text-xs text-white">${k.name}</span>
+                        ${k.isAdmin ? '<span class="ml-2 bg-red-900 text-red-200 text-[9px] px-1.5 py-0.5 rounded font-bold">ADMIN</span>' : ''}
+                        <p class="text-xs font-mono text-red-400 mt-0.5">${k.key}</p>
+                    </div>
+                    <button onclick="copyToClipboard('${k.key}')" class="text-gray-400 hover:text-red-400 p-2 text-xs" title="Schlüssel kopieren">
+                        <i class="fa-solid fa-copy text-sm"></i>
+                    </button>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert(`Schlüssel "${text}" in die Zwischenablage kopiert!`);
+        }
+
+        // --- MULTI-LANGUAGE TRANSLATOR ---
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) {
+                    el.innerText = i18n[lang][key];
+                }
+            });
+        }
+
+        // APP INIT
+        window.onload = function() {
+            // Reset state to ensure valid initial data
+            localStorage.setItem('vip_keys', JSON.stringify(keysState));
+            saveState();
+            document.getElementById('products-grid').innerHTML = '';
+        };
+    </script>
+</body>
+</html>
